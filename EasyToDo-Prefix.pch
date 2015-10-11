@@ -1,0 +1,36 @@
+//
+//  EasyToDo-Prefix.pch
+//  EasyToDo
+//
+//  Created by XiRuo on 15/10/10.
+//  Copyright © 2015年 Xiruo. All rights reserved.
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+
+
+#import <Availability.h>
+
+#ifndef __IPHONE_7_0
+#warning "This project uses features only available in iOS SDK 7.0 and later."
+#endif
+
+#ifdef DEBUG
+#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+
+#define WEAKSELF typeof(self) __weak weakSelf = self;
+#define STRONGSELF typeof(weakSelf) __strong strongSelf = weakSelf;
+
+
+
+
+#ifdef __OBJC__
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+
+#import "ToDoEventModel.h"
+
+#endif
