@@ -38,7 +38,8 @@
 {
     [super viewDidLoad];
     self.title = @"所有项目";
-    self.view.backgroundColor = [UIColor clearColor];
+    //0xF0ECD4
+    self.view.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self initRightBarButtonItem];
     [self configTableView];
@@ -69,7 +70,8 @@
     self.mainTableView.dataSource = self;
     self.mainTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.mainTableView];
-    
+    self.mainTableView.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
+
     
     [self.mainTableView registerNib:[UINib nibWithNibName:NSStringFromClass(NSClassFromString(@"MainTableViewCell")) bundle:nil] forCellReuseIdentifier:@"MainTableViewCell"];
 }
@@ -100,29 +102,31 @@
     }
     
     ToDoEventModel *model = [self.eventsArray objectAtIndex:indexPath.row];
-//    model.eventName = [NSString stringWithFormat:@"%@ 去北京最繁华的地带玩耍,啦啦啦 To Do",[NSNumber numberWithInteger:indexPath.row]];
     cell.eventModel = model;
-    
-    //[self configBlockOfCell:cell];
     
     return cell;
 }
 
-- (void)configBlockOfCell:(UITableViewCell *)cell
-{
-//    WEAKSELF
-//    cell.addFriendBlock = ^(UITableViewCell *cell){
-//        DLog(@"添加 %@",cell.user.name);
-//    };
-}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DLog(@"进入第 %@ 个项目",[NSNumber numberWithInteger:indexPath.row]);
     EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+    ToDoEventModel *model = [self.eventsArray objectAtIndex:indexPath.row];
+    eventVC.eventModel = model;
+    eventVC.isAddNewEvent = NO;
+    eventVC.currentEventRow = indexPath.row;
+    
     [self.navigationController pushViewController:eventVC animated:YES];
+    
+    WEAKSELF
+    eventVC.finishEditEventBlock = ^(BOOL isAddNewEvent, NSInteger currentEventRow, ToDoEventModel *currentEvent){
+        if(!isAddNewEvent && currentEvent){
+            [weakSelf.eventsArray replaceObjectAtIndex:currentEventRow withObject:currentEvent];
+            [weakSelf.mainTableView reloadData];
+        }
+    };
 }
-
 
 
 
@@ -142,9 +146,12 @@
     //对选中的Cell根据editingStyle进行操作
     if (editingStyle == UITableViewCellEditingStyleDelete )
     {
-        //            TODO
-//        MBUser * user = [self.usersArray objectAtIndex:indexPath.row - 1];
-//        [self deleteFriend:user];
+        ToDoEventModel *eventModel = [self.eventsArray objectAtIndex:indexPath.row];
+        
+        [self.eventsArray removeObjectAtIndex:indexPath.row];
+        [tableView reloadData];
+
+        [[EventsDBManager sharedInstance] deleteEvent:eventModel];
     }
 }
 
@@ -184,7 +191,17 @@
 - (void)addEventButtonClick:(UIButton *)button
 {
     EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+    eventVC.isAddNewEvent = YES;
     [self.navigationController pushViewController:eventVC animated:YES];
+    WEAKSELF
+    eventVC.finishEditEventBlock = ^(BOOL isAddNewEvent, NSInteger currentEventRow, ToDoEventModel *currentEvent){
+        if(isAddNewEvent && currentEvent){
+            [weakSelf.eventsArray insertObject:currentEvent atIndex:0];
+            [weakSelf.mainTableView reloadData];
+            NSIndexPath *indexPath0 = [NSIndexPath indexPathForRow:0 inSection:0];
+            [weakSelf.mainTableView scrollToRowAtIndexPath:indexPath0 atScrollPosition:UITableViewScrollPositionNone animated:NO];
+        }
+    };
 }
 
 - (void)didReceiveMemoryWarning

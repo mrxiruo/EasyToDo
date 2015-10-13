@@ -12,4 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *titleTextField;
 
+@property (strong, nonatomic) NSString *title;
+
 @end

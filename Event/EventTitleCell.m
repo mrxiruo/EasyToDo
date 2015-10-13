@@ -20,4 +20,9 @@
     // Configure the view for the selected state
 }
 
+-(void)setTitle:(NSString *)title
+{
+    self.titleTextField.text = title;
+}
+
 @end

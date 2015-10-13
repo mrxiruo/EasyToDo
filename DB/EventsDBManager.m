@@ -140,6 +140,7 @@ static EventsDBManager *eventsDBManager;
 
 - (BOOL)deleteEvent:(ToDoEventModel *)event
 {
+    //TO DO
     if ([self.eventDataBase open]) {
         
         NSString *deleteSql = [NSString stringWithFormat:

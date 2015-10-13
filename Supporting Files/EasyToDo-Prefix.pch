@@ -32,5 +32,6 @@
 #import <Foundation/Foundation.h>
 
 #import "ToDoEventModel.h"
+#import "UIColor+EasyToDo.h"
 
 #endif

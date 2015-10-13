@@ -42,9 +42,10 @@
 
     self.title = @"计划详情";
     self.edgesForExtendedLayout = UIRectEdgeNone;
-
+    self.view.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
     [self initRightBarButtonItem];
     [self configTableView];
+    
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenKeyboard:)];
     [self.view addGestureRecognizer:tap];
@@ -58,19 +59,45 @@
 
 - (void)finishEventClick:(UIButton *)button
 {
-    ToDoEventModel *model = [[ToDoEventModel alloc] init];
+    if(self.isAddNewEvent){
+        //如果是要增加新的事件
 
-    EventTitleCell *titleCell = [self.detailTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        ToDoEventModel *model = [[ToDoEventModel alloc] init];
+        
+        EventTitleCell *titleCell = [self.detailTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        
+        
+        model.eventId = [[NSDate date] timeIntervalSince1970];
+        model.eventName = [titleCell.titleTextField.text copy];
+        model.eventDescription = @"大帝都大帝都手打手打撒到撒到 速度大手打手打撒到撒到打算打算打算打算的";
+        model.eventAddedTime = [NSString stringWithFormat:@"%@",[NSNumber numberWithInteger:model.eventId]];
+        model.eventRemindTimeArray = @[@"2015-10-19",@"2015-10-20"];
+        
+        
+        [[EventsDBManager sharedInstance] insertNewEvent:model];
+        
+        if(self.finishEditEventBlock){
+            self.finishEditEventBlock(self.isAddNewEvent, self.currentEventRow, model);
+        }
+        
+    }else{
+        //如果是修改以前的事件
+        DLog(@"修改事件完成");
+        
+        EventTitleCell *titleCell = [self.detailTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        self.eventModel.eventName = [titleCell.titleTextField.text copy];
+        
+        if(self.finishEditEventBlock){
+            self.finishEditEventBlock(self.isAddNewEvent, self.currentEventRow, self.eventModel);
+        }
+        
+    }
     
     
+
     
-    model.eventId = [[NSDate date] timeIntervalSince1970];
-    model.eventName = [titleCell.titleTextField.text copy];
-    model.eventDescription = @"大帝都大帝都手打手打撒到撒到 速度大手打手打撒到撒到打算打算打算打算的";
-    model.eventAddedTime = [NSString stringWithFormat:@"%@",[NSNumber numberWithInteger:model.eventId]];
-    model.eventRemindTimeArray = @[@"2015-10-19",@"2015-10-20"];
-    
-    [[EventsDBManager sharedInstance] insertNewEvent:model];
+    //成功后马上返回主界面
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)configTableView
@@ -136,6 +163,12 @@
         
         if(!cell){
             cell = (EventTitleCell *)[[NSBundle mainBundle] loadNibNamed:cellName owner:self options:nil][0];
+        }
+        
+        cell.title = self.eventModel.eventName;
+        
+        if(self.isAddNewEvent){
+            [cell.titleTextField becomeFirstResponder];
         }
         
         return cell;
