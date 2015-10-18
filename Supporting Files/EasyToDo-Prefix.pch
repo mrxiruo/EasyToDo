@@ -36,5 +36,6 @@
 #import "UIColor+EasyToDo.h"
 #import "NSDate+EasyToDo.h"
 #import "UIView+Position.h"
+#import "NSString+EasyToDo.h"
 
 #endif
