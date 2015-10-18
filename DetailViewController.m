@@ -25,9 +25,9 @@
     if(!_remindTimePickerToolBar){
         _remindTimePickerToolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(.0f, .0f, kScreenWidth, 44.0f)];
         _remindTimePickerToolBar.userInteractionEnabled = YES;
-        NSArray *segmentedArray = @[@"马上", @"具体", @"循环"];
+        NSArray *segmentedArray = @[@"具体", @"马上", @"循环"];
         UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentedArray];
-        segmentedControl.frame = CGRectMake(30.0f, 7.0f, kScreenWidth - 60.0f - 60.0f, 30.0);
+        segmentedControl.frame = CGRectMake(10.0f, 7.0f, kScreenWidth - 60.0f - 60.0f, 30.0);
         segmentedControl.selectedSegmentIndex = 0;//设置默认选择项索引
         segmentedControl.tintColor = [UIColor redColor];
         
@@ -36,13 +36,13 @@
         [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
         
-        UIButton *finishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [finishButton setFrame:CGRectMake(segmentedControl.right + 20.0f, 7.0f, 50.0f, 30.0f)];
-        [finishButton setTitle:@"完成" forState:UIControlStateNormal];
-        [finishButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [finishButton addTarget:self action:@selector(hiddenKeyboard:) forControlEvents:UIControlEventTouchUpInside];
-        [_remindTimePickerToolBar addSubview:finishButton];
-        
+        UIButton *cancelRemindButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [cancelRemindButton setFrame:CGRectMake(segmentedControl.right + 20.0f, 7.0f, 60.0f, 30.0f)];
+        cancelRemindButton.titleLabel.font = [UIFont systemFontOfSize:13.0f];
+        [cancelRemindButton setTitle:@"不提醒" forState:UIControlStateNormal];
+        [cancelRemindButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [cancelRemindButton addTarget:self action:@selector(cancelRemindButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_remindTimePickerToolBar addSubview:cancelRemindButton];
     }
     
     return _remindTimePickerToolBar;
@@ -77,19 +77,23 @@
 
 - (void)initRightBarButtonItem
 {
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(finishEventClick:)]];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"确认修改" style:UIBarButtonItemStyleDone target:self action:@selector(finishEventClick:)]];
 }
 
 - (void)configEvent
 {
     if(!self.isAddNewEvent){
         //如果是修改某事件
+        self.navigationItem.rightBarButtonItem.title = @"确认修改";
+        
         self.titleTextField.text = self.eventModel.eventName;
         self.remindTimeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[self.eventModel.eventRemindTime doubleValue]] getDateStringInMessageList];
         self.detailTextView.text = self.eventModel.eventDescription;
     }else{
+        self.navigationItem.rightBarButtonItem.title = @"确认添加";
+
         self.titleTextField.text = nil;
-        self.remindTimeLabel.text = @"点击设置提醒时间";
+        self.remindTimeLabel.text = @"点击设置提醒时间,默认不提醒";
         self.detailTextView.text = @"在此输入详细描述";
     }
 }
@@ -97,6 +101,11 @@
 
 - (void)finishEventClick:(UIButton *)button
 {
+    if(!self.titleTextField.text || (self.titleTextField.text.trim.length < 1)){
+        self.titleTextField.text = nil;
+        return;
+    }
+    
     if(self.isAddNewEvent){
         //如果是要增加新的事件
         ToDoEventModel *model = [[ToDoEventModel alloc] init];
@@ -104,7 +113,12 @@
         model.eventName = self.titleTextField.text;
         model.eventDescription = self.detailTextView.text;
         model.eventAddedTime =  [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]];
-        model.eventRemindTime = [NSString stringWithFormat:@"%f",[self.remindTimePicker.date timeIntervalSince1970]];
+        
+        if(self.remindTimePicker.date){
+            model.eventRemindTime = [NSString stringWithFormat:@"%f",[self.remindTimePicker.date timeIntervalSince1970]];
+        }else{
+            model.eventRemindTime = nil;
+        }
         
         [[EventsDBManager sharedInstance] insertNewEvent:model];
         
@@ -115,7 +129,11 @@
         //如果是修改以前的事件
         self.eventModel.eventName = self.titleTextField.text;
         self.eventModel.eventDescription = self.detailTextView.text;
-        self.eventModel.eventRemindTime = [NSString stringWithFormat:@"%f",[self.eventModel.eventRemindTime doubleValue]];
+        if(self.eventModel.eventRemindTime){
+            self.eventModel.eventRemindTime = [NSString stringWithFormat:@"%f",[self.eventModel.eventRemindTime doubleValue]];
+        }else{
+            self.eventModel.eventRemindTime = nil;
+        }
         
         [[EventsDBManager sharedInstance] updateEventByNewEvent:self.eventModel];
 
@@ -128,6 +146,12 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+
+- (void)cancelRemindButtonClick:(UIButton *)sender
+{
+    self.eventModel.eventRemindTime = nil;
+    self.remindTimeLabel.text = @"不提醒";
+}
 
 
 - (void)hiddenKeyboard:(UITapGestureRecognizer *)recognizer
@@ -194,12 +218,21 @@
     switch (seg.selectedSegmentIndex){
         case 0:
             [self changeDatePickerTypeTo0];
+            //具体
+            self.remindTimePicker.datePickerMode = UIDatePickerModeDateAndTime;
+            
             break;
         case 1:
             [self changeDatePickerTypeTo1];
+            //马上
+            self.remindTimePicker.datePickerMode = UIDatePickerModeTime;
+            self.remindTimePicker.date = [NSDate date];
             break;
         case 2:
             [self changeDatePickerTypeTo2];
+            //循环
+            
+            
             break;
         default:
             break;

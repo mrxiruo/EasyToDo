@@ -22,8 +22,13 @@
 {
     self.eventNameLabel.text = eventModel.eventName;
     NSDate *addedDate = [NSDate dateWithTimeIntervalSince1970:[eventModel.eventAddedTime doubleValue]];
-    self.eventAddedTimeLabel.text = [NSString stringWithFormat:@"%@",[addedDate getIntervalDisplayDateString]];
-    self.eventRemindTimeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[eventModel.eventRemindTime doubleValue]] getDateStringInMessageList];
+    self.eventAddedTimeLabel.text = [NSString stringWithFormat:@"创建于%@",[addedDate getIntervalDisplayDateString]];
+    
+    if(!eventModel.eventRemindTime){
+        self.eventRemindTimeLabel.text = @"无提醒";
+    }else{
+        self.eventRemindTimeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[eventModel.eventRemindTime doubleValue]] getDateStringInMessageList];
+    }
 }
 
 - (void)swipeEvent:(UISwipeGestureRecognizer *)sender

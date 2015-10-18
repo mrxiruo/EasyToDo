@@ -92,7 +92,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     NSString * cellName = @"MainTableViewCell";
     
     MainTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellName];

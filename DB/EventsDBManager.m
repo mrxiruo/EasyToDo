@@ -179,9 +179,20 @@ static EventsDBManager *eventsDBManager;
             
             model.eventId = [rs intForColumn:EVENT_ID];
             model.eventName = [rs stringForColumn:EVENT_TITLE];
-            model.eventDescription = [rs stringForColumn:EVENT_DETAIL];
+            
+            if([rs columnIsNull:EVENT_DETAIL]){
+                model.eventDescription = nil;
+            }else{
+                model.eventDescription = [rs stringForColumn:EVENT_DETAIL];
+            }
+            
             model.eventAddedTime = [rs stringForColumn:EVENT_ADD_TIME];
-            model.eventRemindTime = [rs stringForColumn:EVENT_REMIND_TIME];
+            
+            if([rs columnIsNull:EVENT_REMIND_TIME]){
+                model.eventRemindTime = nil;
+            }else{
+                model.eventRemindTime = [rs stringForColumn:EVENT_REMIND_TIME];
+            }
 
             [eventsArray addObject:model];
         }
