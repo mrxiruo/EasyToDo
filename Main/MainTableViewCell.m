@@ -16,13 +16,14 @@
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeEvent:)];
     swipe.direction = UISwipeGestureRecognizerDirectionRight;
     [self addGestureRecognizer:swipe];
-    
 }
 
 - (void)setEventModel:(ToDoEventModel *)eventModel
 {
     self.eventNameLabel.text = eventModel.eventName;
-//    self.eventNameLabel.text = [NSString stringWithFormat:@"%@, %@",eventModel.eventName, eventModel.eventAddedTime];
+    NSDate *addedDate = [NSDate dateWithTimeIntervalSince1970:[eventModel.eventAddedTime doubleValue]];
+    self.eventAddedTimeLabel.text = [NSString stringWithFormat:@"%@",[addedDate getIntervalDisplayDateString]];
+    self.eventRemindTimeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[eventModel.eventRemindTime doubleValue]] getDateStringInMessageList];
 }
 
 - (void)swipeEvent:(UISwipeGestureRecognizer *)sender

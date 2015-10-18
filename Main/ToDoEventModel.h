@@ -19,11 +19,6 @@
 
 @property (copy, nonatomic) NSString *eventAddedTime;
 
-@property (copy, nonatomic) NSString *eventStartTime;
-
-@property (copy, nonatomic) NSString *eventFnishTime;
-
-
-@property (strong, nonatomic) NSArray *eventRemindTimeArray;
+@property (copy, nonatomic) NSString *eventRemindTime;
 
 @end

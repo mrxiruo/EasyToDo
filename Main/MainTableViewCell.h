@@ -10,6 +10,10 @@
 #import "ToDoEventModel.h"
 
 @interface MainTableViewCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UILabel *eventRemindTimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventAddedTimeLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *eventNameLabel;
 
 @property (strong, nonatomic) ToDoEventModel *eventModel;

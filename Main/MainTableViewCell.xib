@@ -80,7 +80,9 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="eventAddedTimeLabel" destination="ZA0-6I-40B" id="7Uy-Qc-Xo1"/>
                 <outlet property="eventNameLabel" destination="BZv-Ue-y75" id="kxf-SX-lag"/>
+                <outlet property="eventRemindTimeLabel" destination="tSc-rt-2Nb" id="tjl-CU-s2I"/>
             </connections>
             <point key="canvasLocation" x="302.5" y="217"/>
         </tableViewCell>

@@ -10,16 +10,14 @@
 #import "ToDoEventModel.h"
 
 
-
 #define DBNAME    @"events.sqlite"
 
 #define TABLENAME @"TableAllEvents"
 
-#define ID              @"id"
 #define EVENT_ID        @"eventId"
 #define EVENT_TITLE     @"eventTitle"
 #define EVENT_DETAIL    @"eventDetail"
-#define EVENT_TIME      @"eventTime"
+#define EVENT_ADD_TIME      @"eventAddTime"
 #define EVENT_REMIND_TIME      @"eventRemindTime"
 
 static dispatch_once_t *once_token_reset;
@@ -54,21 +52,22 @@ static EventsDBManager *eventsDBManager;
     
     self.eventDataBase = [FMDatabase databaseWithPath:self.dataBasePath];
     
+    //为数据库设置缓存，提高查询效率
+    [self.eventDataBase setShouldCacheStatements:YES];
+    
     if([self.eventDataBase open]){
         NSString *sqlCreateTable =  [NSString stringWithFormat:
                                      @"CREATE TABLE IF NOT EXISTS '%@'\
                                      ('%@' INTEGER PRIMARY KEY AUTOINCREMENT,\
-                                     '%@' INTEGER, \
                                      '%@' TEXT,\
                                      '%@' TEXT, \
                                      '%@' TEXT, \
-                                     '%@' BLOB)",\
+                                     '%@' TEXT)",\
                                      TABLENAME,\
-                                     ID,\
                                      EVENT_ID,\
                                      EVENT_TITLE,\
                                      EVENT_DETAIL,\
-                                     EVENT_TIME,\
+                                     EVENT_ADD_TIME,\
                                      EVENT_REMIND_TIME];
         BOOL res = [self.eventDataBase executeUpdate:sqlCreateTable];
         if(!res){
@@ -90,19 +89,22 @@ static EventsDBManager *eventsDBManager;
 
 - (BOOL)insertNewEvent:(ToDoEventModel *)event
 {
-    if ([self.eventDataBase open]) {
-        NSData *eventRemindTimedata = event.eventRemindTimeArray ? [NSKeyedArchiver archivedDataWithRootObject:event.eventRemindTimeArray] : nil;
-        
+    if ([self.eventDataBase open]){
         NSString *insertSql1= [NSString stringWithFormat:
                                @"INSERT INTO '%@' ('%@', '%@', '%@', '%@') VALUES ('%@', '%@', '%@', '%@')",
-                               TABLENAME, EVENT_TITLE, EVENT_DETAIL, EVENT_TIME, EVENT_REMIND_TIME, event.eventName, event.eventDescription, event.eventAddedTime, eventRemindTimedata];
+                               TABLENAME, EVENT_TITLE, EVENT_DETAIL, EVENT_ADD_TIME, EVENT_REMIND_TIME, event.eventName, event.eventDescription, event.eventAddedTime, event.eventRemindTime];
         BOOL res = [self.eventDataBase executeUpdate:insertSql1];
         
         if (!res) {
             DLog(@"error when insert db table");
         } else {
             DLog(@"success to insert db table");
+            
+            sqlite_int64 eventId = [self.eventDataBase lastInsertRowId];
+            event.eventId = eventId;
         }
+        
+        
         [self.eventDataBase close];
         
         return res;
@@ -116,12 +118,12 @@ static EventsDBManager *eventsDBManager;
 - (BOOL)updateEventByNewEvent:(ToDoEventModel *)event
 {
     if ([self.eventDataBase open]) {
-        NSData *eventRemindTimedata = event.eventRemindTimeArray ? [NSKeyedArchiver archivedDataWithRootObject:event.eventRemindTimeArray] : nil;
-
-        NSString *updateSql = [NSString stringWithFormat:
-                               @"UPDATE '%@' SET '%@' = '%@' '%@' = '%@' '%@' = '%@' '%@' = '%@' WHERE '%@' = '%@'",
-                               TABLENAME, EVENT_TITLE, event.eventName, EVENT_DETAIL, event.eventDescription, EVENT_TIME, event.eventAddedTime, EVENT_REMIND_TIME, eventRemindTimedata, EVENT_ID, [NSNumber numberWithInteger:event.eventId]];
-        BOOL res = [self.eventDataBase executeUpdate:updateSql];
+        //可以
+        BOOL res = [self.eventDataBase executeUpdate:@"UPDATE TableAllEvents SET eventTitle=?,eventDetail=?,eventRemindTime=? WHERE eventId=?", event.eventName, event.eventDescription, event.eventRemindTime, [NSNumber numberWithInteger:event.eventId]];
+        
+//        NSString *updateSql = [NSString stringWithFormat:@"UPDATE '%@' SET '%@'='%@','%@'='%@','%@'='%@','%@'='%@' WHERE '%@'='%@'", TABLENAME, EVENT_TITLE, event.eventName,EVENT_DETAIL, event.eventDescription, EVENT_ADD_TIME, event.eventAddedTime, EVENT_REMIND_TIME, event.eventRemindTime, ID, [NSString stringWithFormat:@"%@",[NSNumber numberWithInteger:event.eventId]]];
+//        BOOL res = [self.eventDataBase executeUpdate:updateSql];
+        
         if (!res) {
             DLog(@"error when update db table");
         } else {
@@ -169,21 +171,17 @@ static EventsDBManager *eventsDBManager;
     NSMutableArray *eventsArray = [[NSMutableArray alloc] init];
     if([self.eventDataBase open]) {
         NSString * sql = [NSString stringWithFormat:
-                          @"SELECT * FROM %@ order by eventTime desc",TABLENAME];
+                          @"SELECT * FROM %@ order by %@ desc",TABLENAME, EVENT_ADD_TIME];
         FMResultSet * rs = [self.eventDataBase executeQuery:sql];
+        
         while ([rs next]) {
-            int eventId = [rs intForColumn:EVENT_ID];
-            NSString * title = [rs stringForColumn:EVENT_TITLE];
-            NSString * detail = [rs stringForColumn:EVENT_DETAIL];
-            NSString * eventTime = [rs stringForColumn:EVENT_TIME];
-            NSData * eventRemindTimeData = [rs dataForColumn:EVENT_REMIND_TIME];
-            
             ToDoEventModel *model = [[ToDoEventModel alloc] init];
-            model.eventId = eventId;
-            model.eventName = title;
-            model.eventDescription = detail;
-            model.eventAddedTime = eventTime;
-            model.eventRemindTimeArray = [NSKeyedUnarchiver unarchiveObjectWithData:eventRemindTimeData];
+            
+            model.eventId = [rs intForColumn:EVENT_ID];
+            model.eventName = [rs stringForColumn:EVENT_TITLE];
+            model.eventDescription = [rs stringForColumn:EVENT_DETAIL];
+            model.eventAddedTime = [rs stringForColumn:EVENT_ADD_TIME];
+            model.eventRemindTime = [rs stringForColumn:EVENT_REMIND_TIME];
 
             [eventsArray addObject:model];
         }

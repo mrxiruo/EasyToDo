@@ -12,6 +12,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    self.userInteractionEnabled = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

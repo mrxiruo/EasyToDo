@@ -10,6 +10,7 @@
 #import "MainTableViewCell.h"
 #import "ToDoEventModel.h"
 #import "EventDetailViewController.h"
+#import "DetailViewController.h"
 
 #import "EventsDBManager.h"
 
@@ -48,8 +49,8 @@
 
 - (void)initRightBarButtonItem
 {
-    UIButton * searchButton= [self addEventButton];
-    self.navigationItem.rightBarButtonItems=@[[[UIBarButtonItem alloc] initWithCustomView:searchButton]];
+    UIButton *addEventButton= [self addEventButton];
+    self.navigationItem.rightBarButtonItems=@[[[UIBarButtonItem alloc] initWithCustomView:addEventButton]];
 }
 
 - (void)loadEventsData
@@ -111,12 +112,18 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DLog(@"进入第 %@ 个项目",[NSNumber numberWithInteger:indexPath.row]);
-    EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+//    EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+//    ToDoEventModel *model = [self.eventsArray objectAtIndex:indexPath.row];
+//    eventVC.eventModel = model;
+//    eventVC.isAddNewEvent = NO;
+//    eventVC.currentEventRow = indexPath.row;
+    
+    DetailViewController *eventVC = [[DetailViewController alloc] init];
     ToDoEventModel *model = [self.eventsArray objectAtIndex:indexPath.row];
     eventVC.eventModel = model;
     eventVC.isAddNewEvent = NO;
     eventVC.currentEventRow = indexPath.row;
-    
+
     [self.navigationController pushViewController:eventVC animated:YES];
     
     WEAKSELF
@@ -190,9 +197,17 @@
 
 - (void)addEventButtonClick:(UIButton *)button
 {
-    EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+//    EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
+//    eventVC.isAddNewEvent = YES;
+//    [self.navigationController pushViewController:eventVC animated:YES];
+    
+    
+    DetailViewController *eventVC = [[DetailViewController alloc] init];
     eventVC.isAddNewEvent = YES;
+    
     [self.navigationController pushViewController:eventVC animated:YES];
+    
+    
     WEAKSELF
     eventVC.finishEditEventBlock = ^(BOOL isAddNewEvent, NSInteger currentEventRow, ToDoEventModel *currentEvent){
         if(isAddNewEvent && currentEvent){

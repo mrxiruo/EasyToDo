@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController">
+            <connections>
+                <outlet property="backScrollView" destination="RTd-kN-kjd" id="lSS-rl-lWt"/>
+                <outlet property="detailTextView" destination="zMW-lF-3Y2" id="lnd-TR-qTJ"/>
+                <outlet property="remindTimeLabel" destination="vte-SC-s2a" id="sDc-ZB-QlD"/>
+                <outlet property="titleTextField" destination="Zd4-ak-z7b" id="er8-br-dma"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="RTd-kN-kjd">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="点击输入事件标题" textAlignment="natural" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Zd4-ak-z7b">
+                            <rect key="frame" x="8" y="20" width="359" height="50"/>
+                            <color key="backgroundColor" red="0.78039215689999997" green="0.80000000000000004" blue="0.81176470590000005" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="Z3u-LF-jqj"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015年10月21日 13:52" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vte-SC-s2a">
+                            <rect key="frame" x="8" y="90" width="359" height="50"/>
+                            <color key="backgroundColor" red="0.78039215689999997" green="0.80000000000000004" blue="0.81176470590000005" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="5dT-ot-tK5"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                            <color key="textColor" red="0.94117647059999998" green="0.92549019610000005" blue="0.83137254900000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zMW-lF-3Y2">
+                            <rect key="frame" x="8" y="160" width="359" height="201"/>
+                            <color key="backgroundColor" red="0.78039215689999997" green="0.80000000000000004" blue="0.81176470590000005" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="201" id="BQU-ZK-lQ6"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="vte-SC-s2a" firstAttribute="leading" secondItem="RTd-kN-kjd" secondAttribute="leading" constant="8" id="5ug-S1-RjA"/>
+                        <constraint firstItem="Zd4-ak-z7b" firstAttribute="leading" secondItem="RTd-kN-kjd" secondAttribute="leading" constant="8" id="9Ax-9U-jtf"/>
+                        <constraint firstItem="Zd4-ak-z7b" firstAttribute="top" secondItem="RTd-kN-kjd" secondAttribute="top" constant="20" id="FyT-V1-onJ"/>
+                        <constraint firstAttribute="trailing" secondItem="zMW-lF-3Y2" secondAttribute="trailing" constant="8" id="OAj-k2-wmx"/>
+                        <constraint firstItem="zMW-lF-3Y2" firstAttribute="leading" secondItem="RTd-kN-kjd" secondAttribute="leading" constant="8" id="Vsi-eB-s2o"/>
+                        <constraint firstItem="zMW-lF-3Y2" firstAttribute="centerX" secondItem="RTd-kN-kjd" secondAttribute="centerX" id="h4E-p0-RtB"/>
+                        <constraint firstAttribute="bottom" secondItem="zMW-lF-3Y2" secondAttribute="bottom" constant="306" id="j4b-2F-8Kw"/>
+                        <constraint firstItem="zMW-lF-3Y2" firstAttribute="top" secondItem="RTd-kN-kjd" secondAttribute="top" constant="160" id="nPH-aG-rtH"/>
+                        <constraint firstAttribute="trailing" secondItem="Zd4-ak-z7b" secondAttribute="trailing" constant="8" id="o1J-Rw-TLD"/>
+                        <constraint firstItem="zMW-lF-3Y2" firstAttribute="top" secondItem="vte-SC-s2a" secondAttribute="bottom" constant="20" id="ofU-PF-jzO"/>
+                        <constraint firstItem="vte-SC-s2a" firstAttribute="top" secondItem="Zd4-ak-z7b" secondAttribute="bottom" constant="20" id="p3X-mG-euN"/>
+                        <constraint firstAttribute="trailing" secondItem="vte-SC-s2a" secondAttribute="trailing" constant="8" id="sUG-DU-rmo"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="RTd-kN-kjd" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="HiF-UM-KwB"/>
+                <constraint firstAttribute="bottom" secondItem="RTd-kN-kjd" secondAttribute="bottom" id="JQO-6H-pqu"/>
+                <constraint firstAttribute="trailing" secondItem="RTd-kN-kjd" secondAttribute="trailing" id="QIM-TL-MUx"/>
+                <constraint firstItem="RTd-kN-kjd" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="pJ2-Fo-8LK"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <point key="canvasLocation" x="369.5" y="256.5"/>
+        </view>
+    </objects>
+</document>

@@ -36,7 +36,7 @@
         }
     }
     
-    [dateFormatter setDateFormat:@"MM月dd日"];
+    [dateFormatter setDateFormat:@"MM月dd日 HH:mm"];
     NSString *strDate = [dateFormatter stringFromDate:self];
     return NSLocalizedString(strDate, @"");
 }
