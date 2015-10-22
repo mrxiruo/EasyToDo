@@ -13,9 +13,10 @@
 - (void)awakeFromNib {
     // Initialization code
     
-    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeEvent:)];
-    swipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [self addGestureRecognizer:swipe];
+//    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeEvent:)];
+//    swipe.direction = UISwipeGestureRecognizerDirectionRight;
+//    swipe.delaysTouchesBegan = YES;
+//    [self addGestureRecognizer:swipe];
 }
 
 - (void)setEventModel:(ToDoEventModel *)eventModel
@@ -34,8 +35,13 @@
 - (void)swipeEvent:(UISwipeGestureRecognizer *)sender
 {
     DLog(@"右滑");
-    self.backgroundColor = [UIColor yellowColor];
+    self.eventNameLabel.textColor = [UIColor grayColor];
+    
+    if(self.swipeToRightBlock){
+        self.swipeToRightBlock(self.eventModel);
+    }
 }
+
 
 
 

@@ -20,33 +20,7 @@
 
 @implementation DetailViewController
 
-- (UIToolbar *)remindTimePickerToolBar
-{
-    if(!_remindTimePickerToolBar){
-        _remindTimePickerToolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(.0f, .0f, kScreenWidth, 44.0f)];
-        _remindTimePickerToolBar.userInteractionEnabled = YES;
-        NSArray *segmentedArray = @[@"具体", @"马上", @"循环"];
-        UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentedArray];
-        segmentedControl.frame = CGRectMake(10.0f, 7.0f, kScreenWidth - 60.0f - 60.0f, 30.0);
-        segmentedControl.selectedSegmentIndex = 0;//设置默认选择项索引
-        segmentedControl.tintColor = [UIColor redColor];
-        
-        [_remindTimePickerToolBar addSubview:segmentedControl];
-        
-        [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
-        
-        
-        UIButton *cancelRemindButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [cancelRemindButton setFrame:CGRectMake(segmentedControl.right + 20.0f, 7.0f, 60.0f, 30.0f)];
-        cancelRemindButton.titleLabel.font = [UIFont systemFontOfSize:13.0f];
-        [cancelRemindButton setTitle:@"不提醒" forState:UIControlStateNormal];
-        [cancelRemindButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [cancelRemindButton addTarget:self action:@selector(cancelRemindButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [_remindTimePickerToolBar addSubview:cancelRemindButton];
-    }
-    
-    return _remindTimePickerToolBar;
-}
+
 
 
 
@@ -98,6 +72,8 @@
     }
 }
 
+
+#pragma mark - 点击事件
 
 - (void)finishEventClick:(UIButton *)button
 {
@@ -253,6 +229,37 @@
 - (void)changeDatePickerTypeTo2
 {
     DLog(@"选择 2");
+}
+
+
+#pragma mark - Getter
+
+- (UIToolbar *)remindTimePickerToolBar
+{
+    if(!_remindTimePickerToolBar){
+        _remindTimePickerToolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(.0f, .0f, kScreenWidth, 44.0f)];
+        _remindTimePickerToolBar.userInteractionEnabled = YES;
+        NSArray *segmentedArray = @[@"具体", @"马上", @"循环"];
+        UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentedArray];
+        segmentedControl.frame = CGRectMake(10.0f, 7.0f, kScreenWidth - 60.0f - 60.0f, 30.0);
+        segmentedControl.selectedSegmentIndex = 0;//设置默认选择项索引
+        segmentedControl.tintColor = [UIColor redColor];
+        
+        [_remindTimePickerToolBar addSubview:segmentedControl];
+        
+        [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+        
+        
+        UIButton *cancelRemindButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [cancelRemindButton setFrame:CGRectMake(segmentedControl.right + 20.0f, 7.0f, 60.0f, 30.0f)];
+        cancelRemindButton.titleLabel.font = [UIFont systemFontOfSize:13.0f];
+        [cancelRemindButton setTitle:@"不提醒" forState:UIControlStateNormal];
+        [cancelRemindButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [cancelRemindButton addTarget:self action:@selector(cancelRemindButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_remindTimePickerToolBar addSubview:cancelRemindButton];
+    }
+    
+    return _remindTimePickerToolBar;
 }
 
 

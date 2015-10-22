@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ToDoEventModel : NSObject<NSCopying>
+@interface ToDoEventModel : NSObject
 
 @property (assign, nonatomic) NSInteger eventId;
 

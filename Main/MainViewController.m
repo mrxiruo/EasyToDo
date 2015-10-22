@@ -9,7 +9,6 @@
 #import "MainViewController.h"
 #import "MainTableViewCell.h"
 #import "ToDoEventModel.h"
-#import "EventDetailViewController.h"
 #import "DetailViewController.h"
 
 #import "EventsDBManager.h"
@@ -35,16 +34,41 @@
     return _eventsArray;
 }
 
+- (UIButton *)addEventButton
+{
+    UIButton *addEventButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    
+    addEventButton.frame=CGRectMake(0, 0, 30.0f, 30.0f);
+    
+    [addEventButton setImage:[UIImage imageNamed:@"add_interest_btn"] forState:UIControlStateNormal];
+    
+    [addEventButton addTarget:self action:@selector(addEventButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    return addEventButton;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"所有项目";
     //0xF0ECD4
     self.view.backgroundColor = [UIColor colorWithRGBHex:0xDDDDDD];
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    // 设置中间 segmentView 视图
+    [self initTitleSegmentView];
+    
     [self initRightBarButtonItem];
     [self configTableView];
     [self loadEventsData];
+}
+
+- (void)initTitleSegmentView
+{
+    UISegmentedControl *segmentView = [[UISegmentedControl alloc] initWithItems:@[@"未完成", @"已完成"]];
+    segmentView.selectedSegmentIndex = 0;
+    [segmentView setWidth:60.0f forSegmentAtIndex:0];
+    [segmentView setWidth:60.0f forSegmentAtIndex:1];
+    self.navigationItem.titleView = segmentView;
+    [segmentView addTarget:self action:@selector(navigationBarSegmentAction:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)initRightBarButtonItem
@@ -52,16 +76,6 @@
     UIButton *addEventButton= [self addEventButton];
     self.navigationItem.rightBarButtonItems=@[[[UIBarButtonItem alloc] initWithCustomView:addEventButton]];
 }
-
-- (void)loadEventsData
-{
-    NSArray *array =  [[EventsDBManager sharedInstance] getAllEvents];
-    if(array){
-        [self.eventsArray addObjectsFromArray:array];
-        [self.mainTableView reloadData];
-    }
-}
-
 
 - (void)configTableView
 {
@@ -75,6 +89,18 @@
 
     
     [self.mainTableView registerNib:[UINib nibWithNibName:NSStringFromClass(NSClassFromString(@"MainTableViewCell")) bundle:nil] forCellReuseIdentifier:@"MainTableViewCell"];
+}
+
+
+#pragma mark - 加载数据
+
+- (void)loadEventsData
+{
+    NSArray *array =  [[EventsDBManager sharedInstance] getAllEvents];
+    if(array){
+        [self.eventsArray addObjectsFromArray:array];
+        [self.mainTableView reloadData];
+    }
 }
 
 
@@ -103,6 +129,11 @@
     
     ToDoEventModel *model = [self.eventsArray objectAtIndex:indexPath.row];
     cell.eventModel = model;
+    
+    WEAKSELF
+    cell.swipeToRightBlock = ^(ToDoEventModel *eventModel){
+        [weakSelf.mainTableView reloadData];
+    };
     
     return cell;
 }
@@ -152,12 +183,13 @@
     //对选中的Cell根据editingStyle进行操作
     if (editingStyle == UITableViewCellEditingStyleDelete )
     {
-        ToDoEventModel *eventModel = [self.eventsArray objectAtIndex:indexPath.row];
+//        ToDoEventModel *eventModel = [self.eventsArray objectAtIndex:indexPath.row];
         
         [self.eventsArray removeObjectAtIndex:indexPath.row];
         [tableView reloadData];
 
-        [[EventsDBManager sharedInstance] deleteEvent:eventModel];
+        //暂时不从数据库全删除
+        //[[EventsDBManager sharedInstance] deleteEvent:eventModel];
     }
 }
 
@@ -181,31 +213,14 @@
 
 
 
-- (UIButton *)addEventButton
-{
-    UIButton *addEventButton=[UIButton buttonWithType:UIButtonTypeCustom];
-
-    addEventButton.frame=CGRectMake(0, 0, 30.0f, 30.0f);
-//    addEventButton.imageEdgeInsets = UIEdgeInsetsMake(.0f, 20.f, .0f, .0f);
-    
-    [addEventButton setImage:[UIImage imageNamed:@"add_interest_btn"] forState:UIControlStateNormal];
-    
-    [addEventButton addTarget:self action:@selector(addEventButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    return addEventButton;
-}
+#pragma mark - 点击事件
 
 - (void)addEventButtonClick:(UIButton *)button
 {
-//    EventDetailViewController *eventVC = [[EventDetailViewController alloc] init];
-//    eventVC.isAddNewEvent = YES;
-//    [self.navigationController pushViewController:eventVC animated:YES];
-    
-    
     DetailViewController *eventVC = [[DetailViewController alloc] init];
     eventVC.isAddNewEvent = YES;
     
     [self.navigationController pushViewController:eventVC animated:YES];
-    
     
     WEAKSELF
     eventVC.finishEditEventBlock = ^(BOOL isAddNewEvent, NSInteger currentEventRow, ToDoEventModel *currentEvent){
@@ -217,6 +232,25 @@
         }
     };
 }
+
+
+- (void)navigationBarSegmentAction:(UISegmentedControl *)seg
+{
+    switch (seg.selectedSegmentIndex){
+        case 0:
+            //未完成
+            
+            break;
+        case 1:
+            //已完成
+
+            break;
+        default:
+            break;
+    }
+}
+
+
 
 - (void)didReceiveMemoryWarning
 {

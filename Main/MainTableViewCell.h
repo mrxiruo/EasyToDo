@@ -18,4 +18,7 @@
 
 @property (strong, nonatomic) ToDoEventModel *eventModel;
 
+@property (copy, nonatomic) void(^swipeToRightBlock)(ToDoEventModel *eventModel);
+
+
 @end

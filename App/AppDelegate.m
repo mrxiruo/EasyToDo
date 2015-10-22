@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "BaseNavigationController.h"
 
 @interface AppDelegate ()
 
@@ -16,10 +17,8 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    
-    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
@@ -27,17 +26,9 @@
 
     // 改变 StatusBar 颜色
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-    
-    
-    // 改变 navigation bar 的背景色及前景色
-//    let navigationBarAppearace = UINavigationBar.appearance()
-//    navigationBarAppearace.translucent = false
-//    navigationBarAppearace.barTintColor = UIColor(hex: 0x25b6ed)
-//    navigationBarAppearace.tintColor = UIColor.whiteColor()
-//    navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.whiteColor()]
-    
+
     MainViewController *vc = [[MainViewController alloc] init];
-    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:vc];
+    BaseNavigationController *navi = [[BaseNavigationController alloc] initWithRootViewController:vc];
     self.window.rootViewController = navi;
     
     return YES;
